@@ -1,24 +1,16 @@
-[[https://d3c33hcgiwev3.cloudfront.net/_b65e7611894ba175de27bd14793f894a_15UnionFind.pdf?Expires=1511740800&Signature=KXben1lUYsvwz0Ix5a7Ueh84mQjuxkTkwYZTjnLqpwlMLkCxrBX77uIFya5KS5SVk0yTmFwFxBWGBIKVYrxn9bz171uECmc8Bhm-ZJf6RbuYI0Yra8qSWHO1xBnmHDk8oiWP8eIkB2cMljjDZ5aa5QsRKGvzkr4yuiNjBOIsjB8_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A][1.5: Union Find Lecture Slides]]
+* union find
 
-- [Video 1: Dynamic Connectivity](https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity)
-- [Video 2: Quick Find](https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find)
-- [Video 3: Quick Union](https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union)
-- [Video 4: Quick Union Improvements](https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements)
-- [Video 5: Union Find Applications](https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications)
-- [Assignment: Percolation]()
+** [[https://d3c33hcgiwev3.cloudfront.net/_b65e7611894ba175de27bd14793f894a_15UnionFind.pdf?Expires=1511740800&Signature=KXben1lUYsvwz0Ix5a7Ueh84mQjuxkTkwYZTjnLqpwlMLkCxrBX77uIFya5KS5SVk0yTmFwFxBWGBIKVYrxn9bz171uECmc8Bhm-ZJf6RbuYI0Yra8qSWHO1xBnmHDk8oiWP8eIkB2cMljjDZ5aa5QsRKGvzkr4yuiNjBOIsjB8_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A][1.5: Union Find Lecture Slides]]
 
-## [Video 1: Dynamic Connectivity](https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity)
+  [[https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity][Video 1: Dynamic Connectivity]]
+  [[https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find][Video 2: Quick Find]]
+  [[https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union][Video 3: Quick Union]]
+  [[Video 4: https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements][Video 4: Quick Union Improvements]]
+  [[https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications][Video 5: Union Find Applications]]
+  [[https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/assignments/percolation.md][Assignment: Percolation]]
+
+** Dyanmic connectivity
 
 
-
-
-
-## [Video 2: Quick Find](https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find)
-
-## [Video 3: Quick Union](https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union)
-
-## [Video 4: Quick Union Improvements](https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements)
-
-## [Video 5: Union Find Applications](https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications)
-
+  
 

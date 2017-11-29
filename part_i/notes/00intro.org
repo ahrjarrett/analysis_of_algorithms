@@ -1,0 +1,36 @@
+[[https://d3c33hcgiwev3.cloudfront.net/_f61d4a32d33d174594ef36ee4f08611c_00Intro.pdf?Expires=1511654400&Signature=R-AKxFAhYwxWdIByUX~VDk02R-1XjMp6We7jecTvD9pB0Y-OkOqLIax-1kkUyM-jW7kqiuunfiREYN6EP2W~xxqOy~8cxwGLhjugvX8NPD5gYX-ZQ9bK0klNWOfshucGBOFHz2a6vbhuIN1zhkAIz1~y3LM~qJI5iq6XflegV2o_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A][Lecture Slides]] 
+
+Lecture Notes:
+
+| topic      | data structure & algorithms                        |
+|------------+----------------------------------------------------|
+| data types | stack, queue, union-find, priority queue           |
+| sorting    | quicksort, mergesort, heapsort                     |
+| searching  | BST, red-black BST, hash table                     |
+| graphs     | BFS, DFS, Prim, Kruskal, Dijkstra                  |
+| strings    | radix sorts, tries, KMP, regexps, data compression |
+| advanced   | B-tree, suffix array, maxflow                      |
+
+Why Study Algorithms?
+
+* Study of algorithms dates back to Euclid
+* Formalized by Church and Turing in the 1930s
+
+The main reason to study algorithms is to solve problems that could not otherwise be addressed. For example, the network connectivity problem.
+
+#+BEGIN_QUOTE
+For me, great algorithms are the poetry of computation. Just like verse, they can be terse, allusive, dense, and even mysterious.
+— Francis Sullivan
+#+END_QUOTE
+
+Why else should we study algorithms?
+
+They have become a common language for understanding nature. Computational models are replacing math models in scientific inquiry.
+
+
+
+Prerequisites:
+
+- Programming: loops, arrays, functions, objects, recursion.
+- Java: we use as expository language.
+- Sections 1.1 and 1.2 of [Algorithms, 4th ed.](https://github.com/ahrjarrett/library/blob/master/algorithms/Algorithhms%204th%20Edition%20by%20Robert%20Sedgewick%2C%20Kevin%20Wayne.pdf)

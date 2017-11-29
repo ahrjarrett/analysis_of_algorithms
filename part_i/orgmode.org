@@ -1,0 +1,61 @@
+#+TITLE: Spacemacs Org-Mode CheatSheet
+#+OPTIONS: toc:nil
+
+
+[[https://ontologicalblog.files.wordpress.com/2016/11/spacemacs_cheat_sheet_compact_1-1.pdf][Spacemacs Org-Mode Cheatsheet]]
+
+| Org Mode Command | Result                                |
+|------------------+---------------------------------------|
+| <SPC> m <RET>    | Create another of that heading below. |
+| <SPC> m p        | Start Pomodoro (25 min)               |
+| <                | Move Cursor Left One Word             |
+| <                | Move Cursor Right One Word            |
+| <TAB>            | Rotate Current Subtree Btwn States    |
+| <SHIFT TAB>      | Rotate Entire Buffer Btwn States      |
+| g j              | Go down (forward) one heading         |
+| g k              | Go up (backward) one heading          |
+|                  |                                       |
+
+
+
+* Practice w/ these things:
+*** inside stuff
+**** inside stuff
+*** inside stuff
+**** inside stuff
+***** inside stuff
+****** inside stuff
+******* inside stuff
+******** inside stuff
+*** inside the inside
+*** more stuff like 'er
+** more inside stuff
+*** inside the inside
+*** more stuff like 'er
+** more inside stuff
+*** inside the inside
+*** more stuff like 'er
+** more inside stuff
+*** inside the inside
+*** more stuff like 'er
+* Here they are!
+** More stuff.
+   :LOGBOOK:
+   CLOCK: [2017-11-24 Fri 22:18]--[2017-11-24 Fri 23:42] =>  1:24
+   :END:
+*** inside more stuff is more stuff
+**** inside more stuff is more stuff 2
+***** inside more stuff is more stuff 3
+****** inside more stuff is more stuff 4
+******* inside more stuff is more stuff 4
+******** inside more stuff is more stuff 4
+********* inside more stuff is more stuff 4
+********** inside more stuff is more stuff 4
+*********** inside more stuff is more stuff
+************ inside more stuff is more stuff 2
+************* inside more stuff is more stuff 3
+************** inside more stuff is more stuff 4
+*************** inside more stuff is more stuff 4
+**************** inside more stuff is more stuff 4
+***************** inside more stuff is more stuff 4
+****************** inside more stuff is more stuff 4

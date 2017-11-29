@@ -1,20 +1,22 @@
 #+TITLE: Spacemacs Org-Mode CheatSheet
 #+OPTIONS: toc:nil
 
-
 [[https://ontologicalblog.files.wordpress.com/2016/11/spacemacs_cheat_sheet_compact_1-1.pdf][Spacemacs Org-Mode Cheatsheet]]
 
-| Org Mode Command | Result                                |
-|------------------+---------------------------------------|
-| <SPC> m <RET>    | Create another of that heading below. |
-| <SPC> m p        | Start Pomodoro (25 min)               |
-| <                | Move Cursor Left One Word             |
-| <                | Move Cursor Right One Word            |
-| <TAB>            | Rotate Current Subtree Btwn States    |
-| <SHIFT TAB>      | Rotate Entire Buffer Btwn States      |
-| g j              | Go down (forward) one heading         |
-| g k              | Go up (backward) one heading          |
-|                  |                                       |
+| Org Mode Command | Result                                               |
+|------------------+------------------------------------------------------|
+| <SPC> m <RET>    | Create another of that heading below.                |
+| <SPC> m p        | Start Pomodoro (25 min)                              |
+| <                | Move Cursor Left One Word                            |
+| <                | Move Cursor Right One Word                           |
+| <TAB>            | Rotate Current Subtree Btwn States                   |
+| <SHIFT TAB>      | Rotate Entire Buffer Btwn States                     |
+| g j              | Go down (forward) one heading                        |
+| g k              | Go up (backward) one heading                         |
+| < s <TAB>        | In insert mode, add source block                     |
+| C-c '            | Enter source mode of specfied language in new buffer |
+| , c              | In command mode, exit source entry mode              |
+| C-c C-e h        | Export to html and open file                         |
 
 
 
@@ -59,3 +61,30 @@
 **************** inside more stuff is more stuff 4
 ***************** inside more stuff is more stuff 4
 ****************** inside more stuff is more stuff 4
+
+
+* Source Code:
+
+#+BEGIN_SRC javascript
+
+  /* how does this format in the browser?
+   ,* is this rendered like ``` blocks in github flavored markdown?
+   ,*/
+
+  // single line comment
+
+  const myConstant = 'this is my constant'
+
+  // not tail-recursive tho
+  function factorial(n) {
+    if(n === 1) return n
+    return n * factorial(n-1)
+  }
+
+  let a = Array.prototype
+  
+  console.log(a) // [constructor: ƒ, concat: ƒ, pop: ƒ, push: ƒ, shift: ƒ, …]
+  
+  factorial(5)
+#+END_SRC
+

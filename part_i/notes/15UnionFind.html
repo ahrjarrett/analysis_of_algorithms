@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-11-29 Wed 03:45 -->
+<!-- 2017-11-29 Wed 04:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Union Find Notes</title>
@@ -230,9 +230,31 @@ for the JavaScript code in this tag.
 <body>
 <div id="content">
 <h1 class="title">Union Find Notes</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8e269bd">1. Lecture 1.5: Union Find Lecture Slides</a></li>
+<li><a href="#org6d26e21">2. Dynamic connectivity</a>
+<ul>
+<li><a href="#org7ed08ef">2.1. Given a set of N objects:</a></li>
+<li><a href="#org3ff4d6c">2.2. Modeling the objects:</a></li>
+<li><a href="#orgee519f1">2.3. Modeling the connections</a></li>
+<li><a href="#org1785a77">2.4. Implementing the operations</a></li>
+<li><a href="#org9d4b81d">2.5. Union-find data type (API)</a></li>
+<li><a href="#org7b2c5c8">2.6. Dynamic-connetivity client</a>
+<ul>
+<li><a href="#org5eddad9">2.6.1. Code: Dynamic-connectivity client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 
-<div id="outline-container-orgd0bab43" class="outline-2">
-<h2 id="orgd0bab43"><span class="section-number-2">1</span> <a href="https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf">1.5: Union Find Lecture Slides</a></h2>
+<div id="outline-container-org8e269bd" class="outline-2">
+<h2 id="org8e269bd"><span class="section-number-2">1</span> <a href="https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf">Lecture 1.5: Union Find Lecture Slides</a></h2>
 <div class="outline-text-2" id="text-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -279,8 +301,8 @@ for the JavaScript code in this tag.
 </div>
 
 
-<div id="outline-container-org3f65084" class="outline-2">
-<h2 id="org3f65084"><span class="section-number-2">2</span> Dynamic connectivity</h2>
+<div id="outline-container-org6d26e21" class="outline-2">
+<h2 id="org6d26e21"><span class="section-number-2">2</span> Dynamic connectivity</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Pomodoro log:
@@ -294,8 +316,8 @@ We will be taking a <b>scientific approach</b>
 </p>
 </div>
 
-<div id="outline-container-orgcd9e86a" class="outline-3">
-<h3 id="orgcd9e86a"><span class="section-number-3">2.1</span> Given a set of N objects:</h3>
+<div id="outline-container-org7ed08ef" class="outline-3">
+<h3 id="org7ed08ef"><span class="section-number-3">2.1</span> Given a set of N objects:</h3>
 <div class="outline-text-3" id="text-2-1">
 <ol class="org-ol">
 <li>Union command: Connect two objects</li>
@@ -328,8 +350,8 @@ The algorithm we’re looking at will not return the actual path, but whether th
 </div>
 </div>
 
-<div id="outline-container-org8e8e266" class="outline-3">
-<h3 id="org8e8e266"><span class="section-number-3">2.2</span> Modeling the objects:</h3>
+<div id="outline-container-org3ff4d6c" class="outline-3">
+<h3 id="org3ff4d6c"><span class="section-number-3">2.2</span> Modeling the objects:</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 <b>Applications involve manipulating objects of all types:</b>
@@ -347,8 +369,8 @@ The algorithm we’re looking at will not return the actual path, but whether th
 </div>
 </div>
 
-<div id="outline-container-org782d956" class="outline-3">
-<h3 id="org782d956"><span class="section-number-3">2.3</span> Modeling the connections</h3>
+<div id="outline-container-orgee519f1" class="outline-3">
+<h3 id="orgee519f1"><span class="section-number-3">2.3</span> Modeling the connections</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 We assume “is connected to” is an <a href="https://en.wikipedia.org/wiki/Equivalence_relation">Equivalence Relation</a>
@@ -359,13 +381,110 @@ We assume “is connected to” is an <a href="https://en.wikipedia.org/wiki/Equ
 <li><b>Symmetric:</b> if <code>p</code> is connected to <code>q</code>, then <code>q</code> is connected to <code>p</code></li>
 <li><b>Transitive:</b> if <code>p</code> is connected to <code>q</code> and <code>q</code> is connected to <code>r</code>, then <code>p</code> is connected to <code>r</code></li>
 </ul>
+
+<p>
+<b>Connected components:</b> Maximal <code>set</code> of objects that are mutually connected
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1785a77" class="outline-3">
+<h3 id="org1785a77"><span class="section-number-3">2.4</span> Implementing the operations</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+<b>Find query:</b> Check if two objects are in the same component.
+<b>Union command:</b> Replace components containing two objects with their union.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #A0EDF0;">union</span><span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">2</span>, <span style="color: #CCF8CC;">5</span><span style="color: #DCDCCC;">)</span>
+
+<span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">BEFORE:</span>
+<span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">0</span> <span style="color: #DCDCCC;">}</span> <span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">1</span> <span style="color: #CCF8CC;">4</span> <span style="color: #CCF8CC;">5</span><span style="color: #DCDCCC;">}</span> <span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">2</span> <span style="color: #CCF8CC;">3</span> <span style="color: #CCF8CC;">6</span> <span style="color: #CCF8CC;">7</span> <span style="color: #DCDCCC;">}</span>
+
+<span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">AFTER:</span>
+<span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">0</span> <span style="color: #DCDCCC;">}</span> <span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">1</span> <span style="color: #CCF8CC;">2</span> <span style="color: #CCF8CC;">3</span> <span style="color: #CCF8CC;">4</span> <span style="color: #CCF8CC;">5</span> <span style="color: #CCF8CC;">6</span> <span style="color: #CCF8CC;">7</span> <span style="color: #DCDCCC;">}</span>
+</pre>
+</div>
+
+<p>
+All of this leads up to a specification of a data-type.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9d4b81d" class="outline-3">
+<h3 id="org9d4b81d"><span class="section-number-3">2.5</span> Union-find data type (API)</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+<b>Goal:</b> Design efficient data structure for union-find.
+</p>
+
+<ul class="org-ul">
+<li>Number of objects <i>N</i> can be huge.</li>
+<li>Number of operations <i>M</i> can be huge.</li>
+<li>Find queries and union commands may be intermixed.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #FDECBC; font-weight: bold;">public</span> <span style="color: #FDECBC; font-weight: bold;">class</span> <span style="color: #89C5C8;">UF</span>
+<span style="color: #6C8C6C;">/* </span><span style="color: #8CAC8C;">UnionFind API */</span>
+<span style="color: #89C5C8;">UF</span><span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">N</span><span style="color: #DCDCCC;">)</span>                        <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">initialize union-find data structure with N objects (0 to N-1)</span>
+<span style="color: #89C5C8;">void</span> union<span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span>, <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">q</span><span style="color: #DCDCCC;">)</span>         <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">add connection btwn p and q</span>
+<span style="color: #89C5C8;">boolean</span> connected<span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span>, <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">q</span><span style="color: #DCDCCC;">)</span>  <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">are p and q in the same component?</span>
+<span style="color: #89C5C8;">int</span> find<span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span><span style="color: #DCDCCC;">)</span>                  <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">component identifier for p(0 to N-1)</span>
+<span style="color: #89C5C8;">int</span> count<span style="color: #DCDCCC;">()</span>                      <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">number of components</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7b2c5c8" class="outline-3">
+<h3 id="org7b2c5c8"><span class="section-number-3">2.6</span> Dynamic-connetivity client</h3>
+<div class="outline-text-3" id="text-2-6">
+<ul class="org-ul">
+<li>Read in number of objects <i>N</i> from standard input</li>
+<li>Repeat:
+<ol class="org-ol">
+<li>Read in pair of integers from standard input</li>
+<li>If they are not yet connected, connect them and print out pair</li>
+</ol></li>
+</ul>
+</div>
+
+<div id="outline-container-org5eddad9" class="outline-4">
+<h4 id="org5eddad9"><span class="section-number-4">2.6.1</span> Code: Dynamic-connectivity client</h4>
+<div class="outline-text-4" id="text-2-6-1">
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #FDECBC; font-weight: bold;">public</span> <span style="color: #FDECBC; font-weight: bold;">static</span> <span style="color: #89C5C8;">void</span> <span style="color: #A0EDF0;">main</span><span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">String</span><span style="color: #CCF8CC;">[]</span> <span style="color: #ECBC9C;">args</span><span style="color: #DCDCCC;">)</span>
+<span style="color: #DCDCCC;">{</span>
+    <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">N</span> = StdIn.readInt<span style="color: #CCF8CC;">()</span>;
+    <span style="color: #89C5C8;">UF</span> <span style="color: #ECBC9C;">uf</span> = UF<span style="color: #CCF8CC;">(</span>N<span style="color: #CCF8CC;">)</span>;
+    <span style="color: #FDECBC; font-weight: bold;">while</span> <span style="color: #CCF8CC;">(</span><span style="color: #FDECBC; font-weight: bold;">!</span>StdIn.isEmpty<span style="color: #DDCC9C;">()</span><span style="color: #CCF8CC;">)</span>;
+    <span style="color: #CCF8CC;">{</span>
+        <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span> = StdIn.readInt<span style="color: #DDCC9C;">()</span>;
+        <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">q</span> = StdIn.readInt<span style="color: #DDCC9C;">()</span>;
+        <span style="color: #FDECBC; font-weight: bold;">if</span> <span style="color: #DDCC9C;">(</span><span style="color: #FDECBC; font-weight: bold;">!</span>uf.connected<span style="color: #A0EDF0;">(</span>p, q<span style="color: #A0EDF0;">)</span><span style="color: #DDCC9C;">)</span>
+        <span style="color: #DDCC9C;">{</span>
+            uf.union<span style="color: #A0EDF0;">(</span>p, q<span style="color: #A0EDF0;">)</span>;
+            StdOut.println<span style="color: #A0EDF0;">(</span>p + <span style="color: #D9A0A0;">" "</span> + q<span style="color: #A0EDF0;">)</span>;
+        <span style="color: #DDCC9C;">}</span>
+    <span style="color: #CCF8CC;">}</span>
+<span style="color: #DCDCCC;">}</span>
+</pre>
+</div>
+
+<p>
+This is <i>client code</i>, which means we’re able to actually run and test our code to make sure it works (which is what that code block above is all about).
+</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: ahrjarrett</p>
-<p class="date">Created: 2017-11-29 Wed 03:45</p>
+<p class="date">Created: 2017-11-29 Wed 04:16</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

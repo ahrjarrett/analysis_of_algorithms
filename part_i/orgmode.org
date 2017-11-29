@@ -1,23 +1,24 @@
 #+TITLE: Spacemacs Org-Mode CheatSheet
+#+AUTHOR: ahrjarrett
 #+OPTIONS: toc:nil
 
 [[https://ontologicalblog.files.wordpress.com/2016/11/spacemacs_cheat_sheet_compact_1-1.pdf][Spacemacs Org-Mode Cheatsheet]]
 
-| Org Mode Command | Result                                               |
-|------------------+------------------------------------------------------|
-| <SPC> m <RET>    | Create another of that heading below.                |
-| <SPC> m p        | Start Pomodoro (25 min)                              |
-| <                | Move Cursor Left One Word                            |
-| <                | Move Cursor Right One Word                           |
-| <TAB>            | Rotate Current Subtree Btwn States                   |
-| <SHIFT TAB>      | Rotate Entire Buffer Btwn States                     |
-| g j              | Go down (forward) one heading                        |
-| g k              | Go up (backward) one heading                         |
-| < s <TAB>        | In insert mode, add source block                     |
-| C-c '            | Enter source mode of specfied language in new buffer |
-| , c              | In command mode, exit source entry mode              |
-| C-c C-e h        | Export to html and open file                         |
-
+| Org Mode Command | Result                                                              | Mode                                     |
+|------------------+---------------------------------------------------------------------+------------------------------------------|
+| =<SPC> m <RET>=  | Create another of that heading below.                               | Command                                  |
+| =<SPC> m p=      | Start Pomodoro (25 min)                                             | Command                                  |
+| =<=              | Move Cursor Left One Word (works like =<SHIFT TAB>= in tables, too) | Command                                  |
+| =>=              | Move Cursor Right One Word (works like =<TAB>= in tables)           | Command                                  |
+| =<TAB>=          | Rotate Current Subtree Btwn States                                  | Command, cursor on tree                  |
+| =<SHIFT TAB>=    | Rotate Entire Buffer Btwn States                                    | Command, cursor on tree                  |
+| =g j=            | Go down (forward) one heading                                       | Command, cursor on tree                  |
+| =g k=            | Go up (backward) one heading                                        | Command, cursor on tree                  |
+| =< s <TAB>=      | In insert mode, add source block                                    | Insert                                   |
+| =C-c '=          | Enter source mode of specfied language in new buffer                | Command                                  |
+| =, c=            | In command mode, exit source entry mode                             | Command (from within source code buffer) |
+| =C-c C-e=        | Export menu                                                         | Command                                  |
+| =C-c C-e h o=    | Export to html and open file                                        | Command (changes current application)    |
 
 
 * Practice w/ these things:

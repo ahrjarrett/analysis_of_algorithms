@@ -1,8 +1,7 @@
 #+TITLE: Union Find Notes
-#+OPTIONS: toc:nil
 #+AUTHOR: ahrjarrett
 
-** [[https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf][1.5: Union Find Lecture Slides]]
+** [[https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf][Lecture 1.5: Union Find Lecture Slides]]
    
    | lecture # | link/title               |
    |-----------+--------------------------|
@@ -50,6 +49,10 @@ The algorithm we’re looking at will not return the actual path, but whether th
 
 *** Modeling the objects:
 
+    :LOGBOOK:
+    CLOCK: [2017-11-29 Wed 03:52]
+    :END:
+
 *Applications involve manipulating objects of all types:*
 
 - Pixels in a digital photo
@@ -68,4 +71,72 @@ We assume “is connected to” is an [[https://en.wikipedia.org/wiki/Equivalenc
 - *Symmetric:* if =p= is connected to =q=, then =q= is connected to =p=
 - *Transitive:* if =p= is connected to =q= and =q= is connected to =r=, then =p= is connected to =r=
 
+*Connected components:* Maximal =set= of objects that are mutually connected
+
+*** Implementing the operations
+
+*Find query:* Check if two objects are in the same component.
+*Union command:* Replace components containing two objects with their union.
+
+#+BEGIN_SRC java
+  union(2, 5)
+
+  // BEFORE:
+  { 0 } { 1 4 5} { 2 3 6 7 }
+
+  // AFTER:
+  { 0 } { 1 2 3 4 5 6 7 }
+#+END_SRC
+
+All of this leads up to a specification of a data-type.
+
+*** Union-find data type (API)
+
+
+*Goal:* Design efficient data structure for union-find.
+
+- Number of objects /N/ can be huge.
+- Number of operations /M/ can be huge.
+- Find queries and union commands may be intermixed.
+
+#+BEGIN_SRC java
+public class UF
+/* UnionFind API */
+UF(int N)                        // initialize union-find data structure with N objects (0 to N-1)
+void union(int p, int q)         // add connection btwn p and q
+boolean connected(int p, int q)  // are p and q in the same component?
+int find(int p)                  // component identifier for p(0 to N-1)
+int count()                      // number of components
+#+END_SRC
+
+*** Dynamic-connetivity client
+
+- Read in number of objects /N/ from standard input
+- Repeat:
+    1. Read in pair of integers from standard input
+    2. If they are not yet connected, connect them and print out pair
+
+**** Code: Dynamic-connectivity client
+
+#+BEGIN_SRC java
+  public static void main(String[] args)
+  {
+      int N = StdIn.readInt();
+      UF uf = UF(N);
+      while (!StdIn.isEmpty());
+      {
+          int p = StdIn.readInt();
+          int q = StdIn.readInt();
+          if (!uf.connected(p, q))
+          {
+              uf.union(p, q);
+              StdOut.println(p + " " + q);
+          }
+      }
+  }
+#+END_SRC
+
+This is /client code/, which means we’re able to actually run and test our code to make sure it works (which is what that code block above is all about).
+
+End of video.
 

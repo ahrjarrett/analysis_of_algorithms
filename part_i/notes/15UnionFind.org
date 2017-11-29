@@ -1,15 +1,15 @@
 #+title: Union Find Notes
 #+author: ahrjarrett
 
-** [[https://d3c33hcgiwev3.cloudfront.net/_b65e7611894ba175de27bd14793f894a_15UnionFind.pdf?Expires=1511740800&Signature=KXben1lUYsvwz0Ix5a7Ueh84mQjuxkTkwYZTjnLqpwlMLkCxrBX77uIFya5KS5SVk0yTmFwFxBWGBIKVYrxn9bz171uECmc8Bhm-ZJf6RbuYI0Yra8qSWHO1xBnmHDk8oiWP8eIkB2cMljjDZ5aa5QsRKGvzkr4yuiNjBOIsjB8_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A][1.5: Union Find Lecture Slides]]
+** [[https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf][1.5: Union Find Lecture Slides]]
    
-   | link    | title                    |
-   |---------+--------------------------|
-   | video 1 | [[https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity][Dynamic Connectivity]]     |
-   | video 2 | [[https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find][Quick Find]]               |
-   | video 3 | [[https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union][Quick Union]]              |
-   | video 4 | [[https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements][Quick Union Improvements]] |
-   | video 5 | [[https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications][Union Find Applications]]  |
+   | lecture # | link/title               |
+   |-----------+--------------------------|
+   | video 1   | [[https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity][Dynamic Connectivity]]     |
+   | video 2   | [[https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find][Quick Find]]               |
+   | video 3   | [[https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union][Quick Union]]              |
+   | video 4   | [[https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements][Quick Union Improvements]] |
+   | video 5   | [[https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications][Union Find Applications]]  |
 
 
 ** Dyanmic connectivity

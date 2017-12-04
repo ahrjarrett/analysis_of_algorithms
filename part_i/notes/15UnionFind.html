@@ -1,299 +1,240 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-<!-- 2017-11-29 Wed 04:16 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Union Find Notes</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="ahrjarrett" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
-  pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
-    padding: 8pt;
-    font-family: monospace;
-    overflow: auto;
-    margin: 1.2em;
-  }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'Javascript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
+<!-- 2017-12-03 Sun 20:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Org-mode">
+<meta name="author" content="Andrew Jarrett">
 
-  table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
-  dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  .inlinetask {
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style type="text/css">
+/* org mode styles on top of twbs */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-size: 18px;
+    margin-bottom: 105px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 101px;
+    background-color: #f5f5f5;
+}
+
+footer > div {
     padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+}
+
+footer p {
+    margin: 0 0 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#table-of-contents {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+blockquote p {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+.footpara {
+    display: inline-block;
+}
+
+figcaption {
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding-bottom: 15px;
+}
+
+/* from twbs docs */
+
+.bs-docs-sidebar.affix {
+    position: static;
+}
+@media (min-width: 768px) {
+    .bs-docs-sidebar {
+        padding-left: 20px;
+    }
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+    display: block;
+    padding: 4px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+    padding-left: 19px;
+    color: #A1283B;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #A1283B;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+    padding-left: 18px;
+    font-weight: bold;
+    color: #A1283B;
+    background-color: transparent;
+    border-left: 2px solid #A1283B;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+    padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+    padding-left: 28px;
+    font-weight: 500;
+}
+
+/* Nav: third level (shown on .active) */
+.bs-docs-sidebar .nav .nav .nav {
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 40px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav .nav > li > a:focus {
+    padding-left: 39px;
+}
+.bs-docs-sidebar .nav .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav .nav > .active:focus > a {
+    padding-left: 38px;
+    font-weight: 500;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-docs-sidebar.affix,
+    .bs-docs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-docs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 20px;
+    }
+    .bs-docs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-docs-sidebar.affix-bottom,
+    .bs-docs-sidebar.affix {
+        width: 263px;
+    }
+}
 </style>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
+$(function() {
+    'use strict';
 
-Copyright (C) 2012-2017 Free Software Foundation, Inc.
+    $('.bs-docs-sidebar li').first().addClass('active');
 
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+    $(document.body).scrollspy({target: '.bs-docs-sidebar'});
 
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+    $('.bs-docs-sidebar').affix();
+});
 </script>
 </head>
 <body>
-<div id="content">
-<h1 class="title">Union Find Notes</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#org8e269bd">1. Lecture 1.5: Union Find Lecture Slides</a></li>
-<li><a href="#org6d26e21">2. Dynamic connectivity</a>
-<ul>
-<li><a href="#org7ed08ef">2.1. Given a set of N objects:</a></li>
-<li><a href="#org3ff4d6c">2.2. Modeling the objects:</a></li>
-<li><a href="#orgee519f1">2.3. Modeling the connections</a></li>
-<li><a href="#org1785a77">2.4. Implementing the operations</a></li>
-<li><a href="#org9d4b81d">2.5. Union-find data type (API)</a></li>
-<li><a href="#org7b2c5c8">2.6. Dynamic-connetivity client</a>
-<ul>
-<li><a href="#org5eddad9">2.6.1. Code: Dynamic-connectivity client</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
+<div id="content" class="container">
+<div class="row"><div class="col-md-9"><h1 class="title">Union Find Notes</h1>
 
-<div id="outline-container-org8e269bd" class="outline-2">
-<h2 id="org8e269bd"><span class="section-number-2">1</span> <a href="https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf">Lecture 1.5: Union Find Lecture Slides</a></h2>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> <a href="https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf">Lecture 1.5: Union Find Lecture Slides</a></h2>
 <div class="outline-text-2" id="text-1">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table class="table table-striped table-bordered table-hover table-condensed">
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="left">
 
-<col  class="org-left" />
+<col  class="left">
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">lecture #</th>
-<th scope="col" class="org-left">link/title</th>
+<th scope="col" class="text-left">lecture #</th>
+<th scope="col" class="text-left">link/title</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="org-left">video 1</td>
-<td class="org-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity">Dynamic Connectivity</a></td>
+<td class="text-left">video 1</td>
+<td class="text-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity">Dynamic Connectivity</a></td>
 </tr>
 
 <tr>
-<td class="org-left">video 2</td>
-<td class="org-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find">Quick Find</a></td>
+<td class="text-left">video 2</td>
+<td class="text-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/EcF3P/quick-find">Quick Find</a></td>
 </tr>
 
 <tr>
-<td class="org-left">video 3</td>
-<td class="org-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union">Quick Union</a></td>
+<td class="text-left">video 3</td>
+<td class="text-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/ZgecU/quick-union">Quick Union</a></td>
 </tr>
 
 <tr>
-<td class="org-left">video 4</td>
-<td class="org-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements">Quick Union Improvements</a></td>
+<td class="text-left">video 4</td>
+<td class="text-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/RZW72/quick-union-improvements">Quick Union Improvements</a></td>
 </tr>
 
 <tr>
-<td class="org-left">video 5</td>
-<td class="org-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications">Union Find Applications</a></td>
+<td class="text-left">video 5</td>
+<td class="text-left"><a href="https://www.coursera.org/learn/algorithms-part1/lecture/OLXM8/union-find-applications">Union Find Applications</a></td>
 </tr>
 </tbody>
 </table>
@@ -301,42 +242,42 @@ for the JavaScript code in this tag.
 </div>
 
 
-<div id="outline-container-org6d26e21" class="outline-2">
-<h2 id="org6d26e21"><span class="section-number-2">2</span> Dynamic connectivity</h2>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Dynamic connectivity</h2>
 <div class="outline-text-2" id="text-2">
-<p>
-Pomodoro log:
-</p>
 <p>
 Notes from Video 1:
 </p>
 
 <p>
-We will be taking a <b>scientific approach</b>  
+We will be taking a <b>scientific approach</b>
 </p>
 </div>
 
-<div id="outline-container-org7ed08ef" class="outline-3">
-<h3 id="org7ed08ef"><span class="section-number-3">2.1</span> Given a set of N objects:</h3>
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Given a set of N objects:</h3>
 <div class="outline-text-3" id="text-2-1">
 <ol class="org-ol">
-<li>Union command: Connect two objects</li>
-<li>Find/connected query: is there a path connecting the two objects?</li>
+<li>Union command: Connect two objects
+</li>
+<li>Find/connected query: is there a path connecting the two objects?
+</li>
 </ol>
 
 <div class="org-src-container">
-<pre class="src src-java"><span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">slide 4:</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">4</span>, <span style="color: #CCF8CC;">3</span><span style="color: #DCDCCC;">)</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">3</span>, <span style="color: #CCF8CC;">8</span><span style="color: #DCDCCC;">)</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">6</span>, <span style="color: #CCF8CC;">5</span><span style="color: #DCDCCC;">)</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">9</span>, <span style="color: #CCF8CC;">4</span><span style="color: #DCDCCC;">)</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">2</span>, <span style="color: #CCF8CC;">1</span><span style="color: #DCDCCC;">)</span>
-connected<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">0</span>, <span style="color: #CCF8CC;">7</span><span style="color: #DCDCCC;">)</span> <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">false</span>
-connected<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">8</span>, <span style="color: #CCF8CC;">9</span><span style="color: #DCDCCC;">)</span> <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">true</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">5</span>, <span style="color: #CCF8CC;">0</span><span style="color: #DCDCCC;">)</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">7</span>, <span style="color: #CCF8CC;">2</span><span style="color: #DCDCCC;">)</span>
-union<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">1</span>, <span style="color: #CCF8CC;">0</span><span style="color: #DCDCCC;">)</span>
-connected<span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">0</span>, <span style="color: #CCF8CC;">7</span><span style="color: #DCDCCC;">)</span> <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">true</span>
+
+<pre class="src src-java"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">slide 4:</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">4</span>, <span style="color: #D0372D;">3</span><span style="color: #707183;">)</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">3</span>, <span style="color: #D0372D;">8</span><span style="color: #707183;">)</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">6</span>, <span style="color: #D0372D;">5</span><span style="color: #707183;">)</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">9</span>, <span style="color: #D0372D;">4</span><span style="color: #707183;">)</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">2</span>, <span style="color: #D0372D;">1</span><span style="color: #707183;">)</span>
+connected<span style="color: #707183;">(</span><span style="color: #D0372D;">0</span>, <span style="color: #D0372D;">7</span><span style="color: #707183;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">false</span>
+connected<span style="color: #707183;">(</span><span style="color: #D0372D;">8</span>, <span style="color: #D0372D;">9</span><span style="color: #707183;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">true</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">5</span>, <span style="color: #D0372D;">0</span><span style="color: #707183;">)</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">7</span>, <span style="color: #D0372D;">2</span><span style="color: #707183;">)</span>
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">1</span>, <span style="color: #D0372D;">0</span><span style="color: #707183;">)</span>
+connected<span style="color: #707183;">(</span><span style="color: #D0372D;">0</span>, <span style="color: #D0372D;">7</span><span style="color: #707183;">)</span> <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">true</span>
 </pre>
 </div>
 
@@ -350,36 +291,46 @@ The algorithm we’re looking at will not return the actual path, but whether th
 </div>
 </div>
 
-<div id="outline-container-org3ff4d6c" class="outline-3">
-<h3 id="org3ff4d6c"><span class="section-number-3">2.2</span> Modeling the objects:</h3>
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Modeling the objects:</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 <b>Applications involve manipulating objects of all types:</b>
 </p>
 
 <ul class="org-ul">
-<li>Pixels in a digital photo</li>
-<li>Computers in a network</li>
-<li>Friends in a social network</li>
-<li>Transistors in a computer chip</li>
-<li>Elements in a mathematical set</li>
-<li>Variable names in Fortran program</li>
-<li>Metallic sites in a composite system</li>
+<li>Pixels in a digital photo
+</li>
+<li>Computers in a network
+</li>
+<li>Friends in a social network
+</li>
+<li>Transistors in a computer chip
+</li>
+<li>Elements in a mathematical set
+</li>
+<li>Variable names in Fortran program
+</li>
+<li>Metallic sites in a composite system
+</li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgee519f1" class="outline-3">
-<h3 id="orgee519f1"><span class="section-number-3">2.3</span> Modeling the connections</h3>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> Modeling the connections</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 We assume “is connected to” is an <a href="https://en.wikipedia.org/wiki/Equivalence_relation">Equivalence Relation</a>
 </p>
 
 <ul class="org-ul">
-<li><b>Reflexive:</b> <code>p</code> is connected to <code>p</code></li>
-<li><b>Symmetric:</b> if <code>p</code> is connected to <code>q</code>, then <code>q</code> is connected to <code>p</code></li>
-<li><b>Transitive:</b> if <code>p</code> is connected to <code>q</code> and <code>q</code> is connected to <code>r</code>, then <code>p</code> is connected to <code>r</code></li>
+<li><b>Reflexive:</b> <code>p</code> is connected to <code>p</code>
+</li>
+<li><b>Symmetric:</b> if <code>p</code> is connected to <code>q</code>, then <code>q</code> is connected to <code>p</code>
+</li>
+<li><b>Transitive:</b> if <code>p</code> is connected to <code>q</code> and <code>q</code> is connected to <code>r</code>, then <code>p</code> is connected to <code>r</code>
+</li>
 </ul>
 
 <p>
@@ -388,8 +339,8 @@ We assume “is connected to” is an <a href="https://en.wikipedia.org/wiki/Equ
 </div>
 </div>
 
-<div id="outline-container-org1785a77" class="outline-3">
-<h3 id="org1785a77"><span class="section-number-3">2.4</span> Implementing the operations</h3>
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> Implementing the operations</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 <b>Find query:</b> Check if two objects are in the same component.
@@ -397,13 +348,14 @@ We assume “is connected to” is an <a href="https://en.wikipedia.org/wiki/Equ
 </p>
 
 <div class="org-src-container">
-<pre class="src src-java"><span style="color: #A0EDF0;">union</span><span style="color: #DCDCCC;">(</span><span style="color: #CCF8CC;">2</span>, <span style="color: #CCF8CC;">5</span><span style="color: #DCDCCC;">)</span>
 
-<span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">BEFORE:</span>
-<span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">0</span> <span style="color: #DCDCCC;">}</span> <span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">1</span> <span style="color: #CCF8CC;">4</span> <span style="color: #CCF8CC;">5</span><span style="color: #DCDCCC;">}</span> <span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">2</span> <span style="color: #CCF8CC;">3</span> <span style="color: #CCF8CC;">6</span> <span style="color: #CCF8CC;">7</span> <span style="color: #DCDCCC;">}</span>
+<pre class="src src-java"><span style="color: #006699;">union</span><span style="color: #707183;">(</span><span style="color: #D0372D;">2</span>, <span style="color: #D0372D;">5</span><span style="color: #707183;">)</span>
 
-<span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">AFTER:</span>
-<span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">0</span> <span style="color: #DCDCCC;">}</span> <span style="color: #DCDCCC;">{</span> <span style="color: #CCF8CC;">1</span> <span style="color: #CCF8CC;">2</span> <span style="color: #CCF8CC;">3</span> <span style="color: #CCF8CC;">4</span> <span style="color: #CCF8CC;">5</span> <span style="color: #CCF8CC;">6</span> <span style="color: #CCF8CC;">7</span> <span style="color: #DCDCCC;">}</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">BEFORE:</span>
+<span style="color: #707183;">{</span> <span style="color: #D0372D;">0</span> <span style="color: #707183;">}</span> <span style="color: #707183;">{</span> <span style="color: #D0372D;">1</span> <span style="color: #D0372D;">4</span> <span style="color: #D0372D;">5</span><span style="color: #707183;">}</span> <span style="color: #707183;">{</span> <span style="color: #D0372D;">2</span> <span style="color: #D0372D;">3</span> <span style="color: #D0372D;">6</span> <span style="color: #D0372D;">7</span> <span style="color: #707183;">}</span>
+
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">AFTER:</span>
+<span style="color: #707183;">{</span> <span style="color: #D0372D;">0</span> <span style="color: #707183;">}</span> <span style="color: #707183;">{</span> <span style="color: #D0372D;">1</span> <span style="color: #D0372D;">2</span> <span style="color: #D0372D;">3</span> <span style="color: #D0372D;">4</span> <span style="color: #D0372D;">5</span> <span style="color: #D0372D;">6</span> <span style="color: #D0372D;">7</span> <span style="color: #707183;">}</span>
 </pre>
 </div>
 
@@ -413,79 +365,1079 @@ All of this leads up to a specification of a data-type.
 </div>
 </div>
 
-<div id="outline-container-org9d4b81d" class="outline-3">
-<h3 id="org9d4b81d"><span class="section-number-3">2.5</span> Union-find data type (API)</h3>
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> Union-find data type (API)</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 <b>Goal:</b> Design efficient data structure for union-find.
 </p>
 
 <ul class="org-ul">
-<li>Number of objects <i>N</i> can be huge.</li>
-<li>Number of operations <i>M</i> can be huge.</li>
-<li>Find queries and union commands may be intermixed.</li>
+<li>Number of objects <i>N</i> can be huge.
+</li>
+<li>Number of operations <i>M</i> can be huge.
+</li>
+<li>Find queries and union commands may be intermixed.
+</li>
 </ul>
 
 <div class="org-src-container">
-<pre class="src src-java"><span style="color: #FDECBC; font-weight: bold;">public</span> <span style="color: #FDECBC; font-weight: bold;">class</span> <span style="color: #89C5C8;">UF</span>
-<span style="color: #6C8C6C;">/* </span><span style="color: #8CAC8C;">UnionFind API */</span>
-<span style="color: #89C5C8;">UF</span><span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">N</span><span style="color: #DCDCCC;">)</span>                        <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">initialize union-find data structure with N objects (0 to N-1)</span>
-<span style="color: #89C5C8;">void</span> union<span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span>, <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">q</span><span style="color: #DCDCCC;">)</span>         <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">add connection btwn p and q</span>
-<span style="color: #89C5C8;">boolean</span> connected<span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span>, <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">q</span><span style="color: #DCDCCC;">)</span>  <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">are p and q in the same component?</span>
-<span style="color: #89C5C8;">int</span> find<span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span><span style="color: #DCDCCC;">)</span>                  <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">component identifier for p(0 to N-1)</span>
-<span style="color: #89C5C8;">int</span> count<span style="color: #DCDCCC;">()</span>                      <span style="color: #6C8C6C;">// </span><span style="color: #8CAC8C;">number of components</span>
+
+<pre class="src src-java"><span style="color: #0000FF;">public</span> <span style="color: #0000FF;">class</span> <span style="color: #6434A3;">UF</span>
+<span style="color: #8D8D84;">/* </span><span style="color: #8D8D84; font-style: italic;">UnionFind API */</span>
+<span style="color: #6434A3;">UF</span><span style="color: #707183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">N</span><span style="color: #707183;">)</span>                        <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">initialize union-find data structure with N objects (0 to N-1)</span>
+<span style="color: #6434A3;">void</span> union<span style="color: #707183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span>, <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span><span style="color: #707183;">)</span>         <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">add connection btwn p and q</span>
+<span style="color: #6434A3;">boolean</span> connected<span style="color: #707183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span>, <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span><span style="color: #707183;">)</span>  <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">are p and q in the same component?</span>
+<span style="color: #6434A3;">int</span> find<span style="color: #707183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span><span style="color: #707183;">)</span>                  <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">component identifier for p(0 to N-1)</span>
+<span style="color: #6434A3;">int</span> count<span style="color: #707183;">()</span>                      <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">number of components</span>
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org7b2c5c8" class="outline-3">
-<h3 id="org7b2c5c8"><span class="section-number-3">2.6</span> Dynamic-connetivity client</h3>
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> Dynamic-connetivity client</h3>
 <div class="outline-text-3" id="text-2-6">
 <ul class="org-ul">
-<li>Read in number of objects <i>N</i> from standard input</li>
+<li>Read in number of objects <i>N</i> from standard input
+</li>
 <li>Repeat:
 <ol class="org-ol">
-<li>Read in pair of integers from standard input</li>
-<li>If they are not yet connected, connect them and print out pair</li>
-</ol></li>
+<li>Read in pair of integers from standard input
+</li>
+<li>If they are not yet connected, connect them and print out pair
+</li>
+</ol>
+</li>
 </ul>
 </div>
+</div>
 
-<div id="outline-container-org5eddad9" class="outline-4">
-<h4 id="org5eddad9"><span class="section-number-4">2.6.1</span> Code: Dynamic-connectivity client</h4>
-<div class="outline-text-4" id="text-2-6-1">
+<div id="outline-container-sec-2-7" class="outline-3">
+<h3 id="sec-2-7"><span class="section-number-3">2.7</span> Code: Dynamic-connectivity client</h3>
+<div class="outline-text-3" id="text-2-7">
 <div class="org-src-container">
-<pre class="src src-java"><span style="color: #FDECBC; font-weight: bold;">public</span> <span style="color: #FDECBC; font-weight: bold;">static</span> <span style="color: #89C5C8;">void</span> <span style="color: #A0EDF0;">main</span><span style="color: #DCDCCC;">(</span><span style="color: #89C5C8;">String</span><span style="color: #CCF8CC;">[]</span> <span style="color: #ECBC9C;">args</span><span style="color: #DCDCCC;">)</span>
-<span style="color: #DCDCCC;">{</span>
-    <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">N</span> = StdIn.readInt<span style="color: #CCF8CC;">()</span>;
-    <span style="color: #89C5C8;">UF</span> <span style="color: #ECBC9C;">uf</span> = UF<span style="color: #CCF8CC;">(</span>N<span style="color: #CCF8CC;">)</span>;
-    <span style="color: #FDECBC; font-weight: bold;">while</span> <span style="color: #CCF8CC;">(</span><span style="color: #FDECBC; font-weight: bold;">!</span>StdIn.isEmpty<span style="color: #DDCC9C;">()</span><span style="color: #CCF8CC;">)</span>;
-    <span style="color: #CCF8CC;">{</span>
-        <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">p</span> = StdIn.readInt<span style="color: #DDCC9C;">()</span>;
-        <span style="color: #89C5C8;">int</span> <span style="color: #ECBC9C;">q</span> = StdIn.readInt<span style="color: #DDCC9C;">()</span>;
-        <span style="color: #FDECBC; font-weight: bold;">if</span> <span style="color: #DDCC9C;">(</span><span style="color: #FDECBC; font-weight: bold;">!</span>uf.connected<span style="color: #A0EDF0;">(</span>p, q<span style="color: #A0EDF0;">)</span><span style="color: #DDCC9C;">)</span>
-        <span style="color: #DDCC9C;">{</span>
-            uf.union<span style="color: #A0EDF0;">(</span>p, q<span style="color: #A0EDF0;">)</span>;
-            StdOut.println<span style="color: #A0EDF0;">(</span>p + <span style="color: #D9A0A0;">" "</span> + q<span style="color: #A0EDF0;">)</span>;
-        <span style="color: #DDCC9C;">}</span>
-    <span style="color: #CCF8CC;">}</span>
-<span style="color: #DCDCCC;">}</span>
+
+<pre class="src src-java"><span style="color: #0000FF;">public</span> <span style="color: #0000FF;">static</span> <span style="color: #6434A3;">void</span> <span style="color: #006699;">main</span><span style="color: #707183;">(</span><span style="color: #6434A3;">String</span><span style="color: #7388D6;">[]</span> <span style="color: #BA36A5;">args</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">{</span>
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">N</span> = StdIn.readInt<span style="color: #7388D6;">()</span>;
+    <span style="color: #6434A3;">UF</span> <span style="color: #BA36A5;">uf</span> = UF<span style="color: #7388D6;">(</span>N<span style="color: #7388D6;">)</span>;
+    <span style="color: #0000FF;">while</span> <span style="color: #7388D6;">(</span>!StdIn.isEmpty<span style="color: #909183;">()</span><span style="color: #7388D6;">)</span>;
+    <span style="color: #7388D6;">{</span>
+        <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span> = StdIn.readInt<span style="color: #909183;">()</span>;
+        <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span> = StdIn.readInt<span style="color: #909183;">()</span>;
+        <span style="color: #0000FF;">if</span> <span style="color: #909183;">(</span>!uf.connected<span style="color: #709870;">(</span>p, q<span style="color: #709870;">)</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">{</span>
+            uf.union<span style="color: #709870;">(</span>p, q<span style="color: #709870;">)</span>;
+            StdOut.println<span style="color: #709870;">(</span>p + <span style="color: #008000;">" "</span> + q<span style="color: #709870;">)</span>;
+        <span style="color: #909183;">}</span>
+    <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
 </pre>
 </div>
 
 <p>
 This is <i>client code</i>, which means we’re able to actually run and test our code to make sure it works (which is what that code block above is all about).
 </p>
+
+<p>
+End of video.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Quick Find</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Initializing the Data Structure</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+When implementing the <code>union(p, q)</code> and <code>connected(p, q)</code>, we’re going to initialize the array where each value’s index is also its value (representative of the the point’s <i>reflexivity</i>).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Representing a connection</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+In order to represent a connection, we change the value at <code>p</code> and <code>q</code> to the “entry point”, which is chosen arbitrarily.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">Start: { 0 1 2 3 4 5 6 7 8 9 }</span>
+
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">5</span>, <span style="color: #D0372D;">4</span><span style="color: #707183;">)</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">{ 0 1 2 3 4 4 6 7 8 9 }</span>
+
+union<span style="color: #707183;">(</span><span style="color: #D0372D;">4</span>, <span style="color: #D0372D;">9</span><span style="color: #707183;">)</span>
+<span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">{ 0 1 2 3 4 4 6 7 8 4 }</span>
+</pre>
+</div>
+
+<p>
+&gt; Note: this seems like a somewhat nieve approach, but I think it’s time complexity is O(n), right?
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Code: Quick Find</h3>
+<div class="outline-text-3" id="text-3-3">
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #0000FF;">public</span> <span style="color: #0000FF;">class</span> <span style="color: #6434A3;">QuickFindUF</span>
+<span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">private</span> <span style="color: #6434A3;">int</span><span style="color: #7388D6;">[]</span> <span style="color: #BA36A5;">id</span>;
+
+  <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">This is the constructor:</span>
+  <span style="color: #0000FF;">public</span> <span style="color: #006699;">QuickFindUF</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">N</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    id = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">Int</span><span style="color: #909183;">(</span>N<span style="color: #909183;">)</span>;
+    <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span> = <span style="color: #D0372D;">0</span>; i &lt; <span style="color: #6434A3;">N</span>; i++<span style="color: #909183;">)</span>
+    id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span> = i;
+  <span style="color: #7388D6;">}</span>
+
+  <span style="color: #0000FF;">public</span> <span style="color: #6434A3;">boolean</span> <span style="color: #006699;">connected</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span>, <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #0000FF;">return</span> id<span style="color: #909183;">[</span>p<span style="color: #909183;">]</span> === id<span style="color: #909183;">[</span>q<span style="color: #909183;">]</span>;
+  <span style="color: #7388D6;">}</span>
+
+  <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">change all entries with id[p] to id[q]</span>
+  <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">time complexity: at most 2N plus 2 array accesses</span>
+  <span style="color: #0000FF;">public</span> <span style="color: #6434A3;">void</span> <span style="color: #006699;">union</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span>, <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">pid</span> = id<span style="color: #909183;">[</span>p<span style="color: #909183;">]</span>;
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">qid</span> = id<span style="color: #909183;">[</span>q<span style="color: #909183;">]</span>;
+    <span style="color: #0000FF;">for</span><span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span> = <span style="color: #D0372D;">0</span>; i &lt; id.<span style="color: #6434A3;">length</span>; i++<span style="color: #909183;">)</span>
+      <span style="color: #0000FF;">if</span><span style="color: #909183;">(</span>id<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span> == pid<span style="color: #909183;">)</span> id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span> = qid;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> Time Complexity: Quick Find</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+Quick-find is too slow. Specifically the quick-find defect: Union is too expensive.
+</p>
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+
+
+<colgroup>
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+
+<col  class="right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="text-left">algorithm</th>
+<th scope="col" class="text-left">initialize</th>
+<th scope="col" class="text-left">union</th>
+<th scope="col" class="text-right">find</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-left">quick-find</td>
+<td class="text-left">N</td>
+<td class="text-left">N</td>
+<td class="text-right">1</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Example: Takes N<sup>2</sup> (quadratic) array accesses to process sequence of N union commands on N objects.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Quick Union</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Quick-union is a <i>lazy approach</i>.
+</p>
+</div>
+
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Data structure</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>Integer array <code>id[]</code> of size N.
+</li>
+<li>Interpretation: id[i] is parent of i.
+</li>
+<li>Root of i is <code>id[id[id[...id[i]...]]]</code>. Keep going until it doesn’t change (algorithm ensures no cycles).
+</li>
+</ul>
+
+<p>
+Each node is going to contain a reference to its parent. This is essentially the same data structure as before, but we can think of it as more like a tree (or a <i>forest</i>).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Find Implementation</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+So if we want to implement <code>find</code>, we need to check if <code>p</code> and <code>q</code> have the same root.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> Union Implementation</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+To merge components containing <code>p</code> and <code>q</code>, set the id of <code>p’s</code> root to the id of <code>q’s</code> root. With these implementations in mind, which method is going to be more difficult to implement? This time, <i>find is more difficult</i> because we have to figure out a way to check up the chain to find a common ancestor. In the case of merge (a.k.a. quick-union), we only have to change the value of 1 node.
+</p>
+
+<p>
+<b>Put differently:</b> If we run <code>union(3, 8)</code>, all we do is take the first item and make it a child of the second item (so now 3 points to 8, which points to itself). Then if we do <code>union(9, 4)</code>, 9 finds 4’s root, which is 8, and now 9 points to 8.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> Code: Quick Union</h3>
+<div class="outline-text-3" id="text-4-4">
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #0000FF;">public</span> <span style="color: #0000FF;">class</span> <span style="color: #6434A3;">QuickUnionUF</span>
+<span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">private</span> <span style="color: #6434A3;">int</span><span style="color: #7388D6;">[]</span> <span style="color: #BA36A5;">id</span>;
+
+  <span style="color: #0000FF;">public</span> <span style="color: #006699;">QuickUnionUF</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">N</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    id = <span style="color: #0000FF;">new</span> <span style="color: #6434A3;">int</span><span style="color: #909183;">[</span>N<span style="color: #909183;">]</span>;
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">set id of each object to itself (N array access)</span>
+    <span style="color: #0000FF;">for</span> <span style="color: #909183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span> = <span style="color: #D0372D;">0</span>; i &lt; <span style="color: #6434A3;">N</span>; i++<span style="color: #909183;">)</span> id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span> = i;
+  <span style="color: #7388D6;">}</span>
+
+  <span style="color: #0000FF;">public</span> <span style="color: #6434A3;">int</span> <span style="color: #006699;">root</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">chase parent pointers until reach root (depth of i array accesses)</span>
+    <span style="color: #0000FF;">while</span> <span style="color: #909183;">(</span>i != id<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span><span style="color: #909183;">)</span> i = id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span>;
+    <span style="color: #0000FF;">return</span> i;
+  <span style="color: #7388D6;">}</span>
+
+  <span style="color: #0000FF;">public</span> <span style="color: #6434A3;">boolean</span> <span style="color: #006699;">connected</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span>, <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">check if p and q have same root (depth of p and q array accesses)</span>
+    <span style="color: #0000FF;">return</span> root<span style="color: #909183;">(</span>p<span style="color: #909183;">)</span> === root<span style="color: #909183;">(</span>q<span style="color: #909183;">)</span>;
+  <span style="color: #7388D6;">}</span>
+
+  <span style="color: #0000FF;">public</span> <span style="color: #6434A3;">void</span> <span style="color: #006699;">union</span><span style="color: #7388D6;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">p</span>, <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">q</span><span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">{</span>
+    <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">change root of p to point to root of q (depth of p and q array accesses)</span>
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span> = root<span style="color: #909183;">(</span>p<span style="color: #909183;">)</span>;
+    <span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">j</span> = root<span style="color: #909183;">(</span>q<span style="color: #909183;">)</span>;
+    id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span> = j;
+  <span style="color: #7388D6;">}</span>
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-5" class="outline-3">
+<h3 id="sec-4-5"><span class="section-number-3">4.5</span> Time Complexity: Quick Union</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+Unfortunately, quick-union is also too slow.
+</p>
+</div>
+
+<div id="outline-container-sec-4-5-1" class="outline-4">
+<h4 id="sec-4-5-1"><span class="section-number-4">4.5.1</span> Cost model:</h4>
+<div class="outline-text-4" id="text-4-5-1">
+<table class="table table-striped table-bordered table-hover table-condensed">
+
+
+<colgroup>
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="text-left">algorithm</th>
+<th scope="col" class="text-left">initialize</th>
+<th scope="col" class="text-left">union</th>
+<th scope="col" class="text-left">find</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-left">quick-find</td>
+<td class="text-left">N</td>
+<td class="text-left">N</td>
+<td class="text-left">1</td>
+</tr>
+
+<tr>
+<td class="text-left">quick-union</td>
+<td class="text-left">N</td>
+<td class="text-left">N†</td>
+<td class="text-left">N</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+† includes cost of finding roots
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-5-2" class="outline-4">
+<h4 id="sec-4-5-2"><span class="section-number-4">4.5.2</span> Quick-find defect</h4>
+<div class="outline-text-4" id="text-4-5-2">
+<ul class="org-ul">
+<li>Union too expensive (N array accesses).
+</li>
+<li>Trees are flat, but too expensive to keep them flat.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-4-5-3" class="outline-4">
+<h4 id="sec-4-5-3"><span class="section-number-4">4.5.3</span> Quick-union defect</h4>
+<div class="outline-text-4" id="text-4-5-3">
+<ul class="org-ul">
+<li>Trees can get tall.
+</li>
+<li>Find too expensive (could be N array accesses).
+</li>
+</ul>
 </div>
 </div>
 </div>
 </div>
+
+
+
+
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Quick Union Improvements</h2>
+<div class="outline-text-2" id="text-5">
+</div><div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> Improvement 1: Weighting</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+<b>Weighted quick-union.</b>
+</p>
+
+<ul class="org-ul">
+<li>Modify quick-union to avoid tall trees.
+</li>
+<li>Keep track of size of each tree (number of objects).
+</li>
+<li>Balance by linking root of smaller tree to root of larger tree. &lt;- Reasonable alternatives: union by height or “rank”
+</li>
+</ul>
 </div>
-<div id="postamble" class="status">
-<p class="author">Author: ahrjarrett</p>
-<p class="date">Created: 2017-11-29 Wed 04:16</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
+
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Java Implementation</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+<b>Data structure:</b> Same as quick union, but maintain extra array <code>sz[i]</code> to count number of objects in the tree rooted at <code>i</code>.
+</p>
+
+<p>
+<b>Find:</b> Identical to quick union.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #0000FF;">return</span> root<span style="color: #707183;">(</span>p<span style="color: #707183;">)</span> === root<span style="color: #707183;">(</span>q<span style="color: #707183;">)</span>;
+</pre>
+</div>
+
+<p>
+<b>Union:</b> Modify quick union to:
+</p>
+<ul class="org-ul">
+<li>Link root of smaller tree to root of larger tree.
+</li>
+<li>Update the <code>sz[]</code> array.
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span> = root<span style="color: #707183;">(</span>p<span style="color: #707183;">)</span>;
+<span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">j</span> = root<span style="color: #707183;">(</span>q<span style="color: #707183;">)</span>;
+<span style="color: #0000FF;">if</span> <span style="color: #707183;">(</span>i === j<span style="color: #707183;">)</span> <span style="color: #0000FF;">return</span>;
+<span style="color: #0000FF;">if</span> <span style="color: #707183;">(</span>sz<span style="color: #7388D6;">[</span>i<span style="color: #7388D6;">]</span> &lt; sz<span style="color: #7388D6;">[</span>j<span style="color: #7388D6;">]</span><span style="color: #707183;">)</span> <span style="color: #707183;">{</span> id<span style="color: #7388D6;">[</span>i<span style="color: #7388D6;">]</span> = j; sz<span style="color: #7388D6;">[</span>j<span style="color: #7388D6;">]</span> += sz<span style="color: #7388D6;">[</span>i<span style="color: #7388D6;">]</span>; <span style="color: #707183;">}</span>
+<span style="color: #0000FF;">else</span>               <span style="color: #707183;">{</span> id<span style="color: #7388D6;">[</span>j<span style="color: #7388D6;">]</span> = i; sz<span style="color: #7388D6;">[</span>i<span style="color: #7388D6;">]</span> += sz<span style="color: #7388D6;">[</span>j<span style="color: #7388D6;">]</span>; <span style="color: #707183;">}</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Weighted Quick Union Analysis</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+<b>Running time:</b>
+</p>
+<ul class="org-ul">
+<li>Find: takes time proportional to depth of <code>p</code> and <code>q</code>.
+</li>
+<li>Union: takes constant time, given roots.
+</li>
+</ul>
+
+<p>
+<b>Proposition:</b> Depth of any node <code>x</code> is at most <code>lg N</code> (logarithm base 2 is always represented as <code>lg N</code>).
+</p>
+
+<p>
+<b>Pf:</b> When does depth of <code>x</code> increase?
+</p>
+
+<p>
+Increases by 1 when tree <code>T1</code> containing <code>x</code> is merged into another tree <code>T2</code>.
+</p>
+
+<ul class="org-ul">
+<li>The size of the tree containing <code>x</code> at least doubles since:
+</li>
+</ul>
+
+<pre class="example">
+|T2| &gt;= |T1|
+</pre>
+
+<ul class="org-ul">
+<li>Size of tree containing <code>x</code> can double at most <code>log N</code> times. Why?
+</li>
+</ul>
+
+<p>
+That means that, in order to have a tree that is 30 levels deep, we would need to have an <code>N</code> of over 1 billion:
+</p>
+
+<pre class="example">
+Math.pow(2, 30) // 1073741824
+</pre>
+
+<p>
+<b>Running time.</b>
+</p>
+<ul class="org-ul">
+<li>Find: takes time proportional to depth of <code>p</code> and <code>q</code>.
+</li>
+<li>Union: takes constant time, given roots.
+</li>
+</ul>
+
+<p>
+<b>Proposition:</b> Depth of any node <code>x</code> is at most <code>lg N</code>.
+</p>
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+
+
+<colgroup>
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="text-left">algorithm</th>
+<th scope="col" class="text-left">intiailize</th>
+<th scope="col" class="text-left">union</th>
+<th scope="col" class="text-left">connected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-left">quick find</td>
+<td class="text-left">N</td>
+<td class="text-left">N</td>
+<td class="text-left">1</td>
+</tr>
+
+<tr>
+<td class="text-left">quick union</td>
+<td class="text-left">N</td>
+<td class="text-left">N †</td>
+<td class="text-left">N</td>
+</tr>
+
+<tr>
+<td class="text-left">weighted QU</td>
+<td class="text-left">N</td>
+<td class="text-left">lg N †</td>
+<td class="text-left">lg N</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+† includes cost of finding roots
+</p>
+
+<p>
+<b>Q.</b> Stop at guaranteed acceptable performance?
+<b>A.</b> No, easy to improve further.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5-4" class="outline-3">
+<h3 id="sec-5-4"><span class="section-number-3">5.4</span> Improvement 2: Path compression</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+<b>Quick union with path compression.</b> Just after computing the root of <code>p</code>, set the id of each examined node to point to that root.
+</p>
+
+<p>
+Put differently, along the way to checking the root of a given node, on the way we might as well also have each node now point directly to that root node (eliminating increasingly expensive lookups).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5-5" class="outline-3">
+<h3 id="sec-5-5"><span class="section-number-3">5.5</span> Path compression: Java implementation</h3>
+<div class="outline-text-3" id="text-5-5">
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #0000FF;">private</span> <span style="color: #6434A3;">int</span> <span style="color: #006699;">root</span><span style="color: #707183;">(</span><span style="color: #6434A3;">int</span> <span style="color: #BA36A5;">i</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">{</span>
+  <span style="color: #0000FF;">while</span><span style="color: #7388D6;">(</span>i != id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span><span style="color: #7388D6;">)</span>
+    <span style="color: #7388D6;">{</span>
+      id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span> = id<span style="color: #909183;">[</span>id<span style="color: #709870;">[</span>i<span style="color: #709870;">]</span><span style="color: #909183;">]</span>; <span style="color: #8D8D84;">// </span><span style="color: #8D8D84; font-style: italic;">only 1 extra line of code!</span>
+      i = id<span style="color: #909183;">[</span>i<span style="color: #909183;">]</span>;
+    <span style="color: #7388D6;">}</span>
+  <span style="color: #0000FF;">return</span> i;
+<span style="color: #707183;">}</span>
+</pre>
+</div>
+
+<p>
+In practice, no reason not to! This implementation keeps the tree <i>almost completely flat</i>. Now, every node points to its grandparent.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5-6" class="outline-3">
+<h3 id="sec-5-6"><span class="section-number-3">5.6</span> Weighted quick union with path compression: amortized analysis</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+<span class="underline">From Wikipedia</span>: “In computer science, amortized analysis is a method for analyzing a given algorithm's time complexity, or how much of a resource, especially time or memory, it takes to execute. The motivation for amortized analysis is that looking at the worst-case run time per operation can be too pessimistic.”
+</p>
+
+<p>
+<b>Proposition:</b> <a href="https://www.coursera.org/learn/algorithms-greedy">Course: {Hopcroft-Ulman, Tarjan}</a>
+</p>
+
+<p>
+Starting from an empty data structure, any sequence of <code>M</code> union find ops on <code>N</code> objects makes&#x2026;
+</p>
+<pre class="example">
+&lt;= c (N + M lg * N)
+</pre>
+
+<p>
+&#x2026;array accesses.
+</p>
+
+<ul class="org-ul">
+<li>Analysis can be improved to <code>N + M α (M, N)</code>.
+</li>
+<li>Simple algorithm with fascinating mathematics.
+</li>
+</ul>
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+
+
+<colgroup>
+<col  class="right">
+
+<col  class="right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="text-right">N</th>
+<th scope="col" class="text-right">lg * N</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-right">1</td>
+<td class="text-right">0</td>
+</tr>
+
+<tr>
+<td class="text-right">2</td>
+<td class="text-right">1</td>
+</tr>
+
+<tr>
+<td class="text-right">4</td>
+<td class="text-right">2</td>
+</tr>
+
+<tr>
+<td class="text-right">16</td>
+<td class="text-right">3</td>
+</tr>
+
+<tr>
+<td class="text-right">65536</td>
+<td class="text-right">4</td>
+</tr>
+
+<tr>
+<td class="text-right">2<sup>65536</sup></td>
+<td class="text-right">5</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<code>lg * N</code> is kind of a funny function; it represents the number of times you have to take the log of <code>N</code> to get 1, otherwise known as the <b>iterate log function</b>. In the real world, it’s best to think of this number as something that can, at most, represent 5.
+</p>
+
+<p>
+Because of this, we can think of the weighted quick union with path compression as <i>linear</i> in the real world. There is also another, more interesting function called the <a href="https://en.wikipedia.org/wiki/Ackermann_function">Ackermann function</a> which grows even more slowly than <code>lg * N</code>.
+</p>
+
+<p>
+Here is that function as represented on page 36 exercise 1.10 in <a href="https://mitpress.mit.edu/books/structure-and-interpretation-computer-programs">Structure and Interpretation of Computer Progams</a>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-lisp"><span style="color: #707183;">(</span>define <span style="color: #7388D6;">(</span>A x y<span style="color: #7388D6;">)</span>
+  <span style="color: #7388D6;">(</span><span style="color: #0000FF;">cond</span> <span style="color: #909183;">(</span><span style="color: #709870;">(</span>= y <span style="color: #D0372D;">0</span><span style="color: #709870;">)</span> <span style="color: #D0372D;">0</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #709870;">(</span>= x <span style="color: #D0372D;">0</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span>* <span style="color: #D0372D;">2</span> y<span style="color: #709870;">)</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span><span style="color: #709870;">(</span>= y <span style="color: #D0372D;">1</span><span style="color: #709870;">)</span> <span style="color: #D0372D;">2</span><span style="color: #909183;">)</span>
+        <span style="color: #909183;">(</span>else <span style="color: #709870;">(</span>A <span style="color: #907373;">(</span>- x <span style="color: #D0372D;">1</span><span style="color: #907373;">)</span>
+              <span style="color: #907373;">(</span>A x <span style="color: #6276BA;">(</span>- y <span style="color: #D0372D;">1</span><span style="color: #6276BA;">)</span><span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+
+<span style="color: #707183;">(</span>A <span style="color: #D0372D;">1</span> <span style="color: #D0372D;">10</span><span style="color: #707183;">)</span> <span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">1024</span>
+<span style="color: #707183;">(</span>A <span style="color: #D0372D;">2</span> <span style="color: #D0372D;">4</span><span style="color: #707183;">)</span>  <span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">65536</span>
+<span style="color: #707183;">(</span>A <span style="color: #D0372D;">3</span> <span style="color: #D0372D;">3</span><span style="color: #707183;">)</span>  <span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">65536</span>
+</pre>
+</div>
+
+<p>
+This leads us to ask the question: is there a linear-time algorithm for <code>M</code> union find ops on <code>N</code> objects?
+</p>
+
+<ul class="org-ul">
+<li>Cost within constant factor of reading in the data.
+</li>
+<li>In theory, WQUPC is not quite linear.
+</li>
+<li>In practice, WQUPC is linear.
+</li>
+</ul>
+
+<p>
+The answer is that we can prove that there is no such algorithm for union find that operates on linear time. This was proven by Friedman and Sachs (neither of whom could I find anything about online?).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5-7" class="outline-3">
+<h3 id="sec-5-7"><span class="section-number-3">5.7</span> Summary</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+<b>Bottom line.</b> Weighted quick union (with path compression) makes it possible to solve problems that could not otherwise be addressed.
+</p>
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+
+
+<colgroup>
+<col  class="left">
+
+<col  class="left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="text-left">algorithm</th>
+<th scope="col" class="text-left">worst-case time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-left">quick find</td>
+<td class="text-left"><code>M N</code></td>
+</tr>
+
+<tr>
+<td class="text-left">quick union</td>
+<td class="text-left"><code>M N</code></td>
+</tr>
+
+<tr>
+<td class="text-left">weighted QU</td>
+<td class="text-left"><code>N + M log N</code></td>
+</tr>
+
+<tr>
+<td class="text-left">QU + path compression</td>
+<td class="text-left"><code>N + M log N</code></td>
+</tr>
+
+<tr>
+<td class="text-left">weighted QU + path compression</td>
+<td class="text-left"><code>N + M lg * N</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<i>Above: M union-find operations on a set of N objects</i>
+</p>
+
+<p>
+<b>Ex.</b> [10<sup>9</sup> unions and finds with 10<sup>9</sup> objects]
+</p>
+<ul class="org-ul">
+<li>WQUPC reduces time from 30 years to 6 seconds.
+</li>
+<li>Supercomputer won’t help much; good algorithm enables solution.
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Union-Find Applications</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+There is a huge number of problems and applications for union-find, including:
+</p>
+
+<ul class="org-ul">
+<li>Percolation
+</li>
+<li>Games (Go, Hex)
+</li>
+<li>Dynamic connectivity
+</li>
+<li>Least common ancestor
+</li>
+<li>Equivalence of finite state automata
+</li>
+<li>Hoshen-Kopelman algorithm in physics
+</li>
+<li><a href="http://akgupta.ca/blog/2013/05/14/so-you-still-dont-understand-hindley-milner/">Hinley-Milner polymorphic type inference</a>
+</li>
+<li>Kruskal’s minimum spanning tree algorithm
+</li>
+<li>Compiling equivalence statements in Fortran
+</li>
+<li>Morphological attribute openings and closings
+</li>
+<li>Matlab’s <code>bwlabel()</code> function in image processing
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> Percolation</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+<b>A model for many physical systems:</b>
+</p>
+<ul class="org-ul">
+<li>N-by-N grid of sites
+</li>
+<li>Each site is open with probability <code>p</code> (or blocked with probability 1 - <code>p</code>)
+</li>
+<li>System <i>percolates</i> iff (if and only if) top and bottom are connected by open sites
+</li>
+</ul>
+
+<p>
+We say that a system is “percolated” if we can find a way to get from the top to the bottom through white squares.
+</p>
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+
+
+<colgroup>
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+
+<col  class="left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="text-left">model</th>
+<th scope="col" class="text-left">system</th>
+<th scope="col" class="text-left">vacant site</th>
+<th scope="col" class="text-left">occupied site</th>
+<th scope="col" class="text-left">percolates</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="text-left">electricity</td>
+<td class="text-left">material</td>
+<td class="text-left">conductor</td>
+<td class="text-left">insulated</td>
+<td class="text-left">conducts</td>
+</tr>
+
+<tr>
+<td class="text-left">fluid flow</td>
+<td class="text-left">material</td>
+<td class="text-left">empty</td>
+<td class="text-left">blocked</td>
+<td class="text-left">porous</td>
+</tr>
+
+<tr>
+<td class="text-left">social interaction</td>
+<td class="text-left">population</td>
+<td class="text-left">person</td>
+<td class="text-left">empty</td>
+<td class="text-left">communicates</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>Note:</b> One thing that was tripping me up is the use of “vacant” and “occupied” here — vacant means that the site is <i>open</i> and data can pass through, whereas occupied means that the site is <i>closed</i>.
+</p>
+
+<p>
+So if we have the quantifiable probability that a site is vacant, how can we quantify the chance that the system percolates?
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Percolation phase transition</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+<b>When <code>N</code> is large, theory guarantees a sharp threshold <code>p*</code>.</b>
+</p>
+<ul class="org-ul">
+<li><code>p &gt; p*</code>: almost certainly percolates.
+</li>
+<li><code>p &lt; p*</code>: almost certainly does not percolate.
+</li>
+</ul>
+
+<p>
+<b>Q.</b> What is the value of <code>p*</code>?
+</p>
+
+<p>
+The threshold is actually very sharp, not as gradual as one might expect. In fact, there is a value that, as <code>N</code> gets large, almost certainly guarantees the system’s chance of percolation, based on whether the probability is above or below this number.
+</p>
+
+<p>
+However, we don’t know exactly what the number is. All we can do is run similations with different sample sizes and different probability values to try to ascertain or estimate what that value actually is. These simulations are made possible by fast union-find algorithms.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> Monte Carlo simulation</h3>
+<div class="outline-text-3" id="text-6-3">
+<ul class="org-ul">
+<li>Initialize N-by-N whole grid to be blocked.
+</li>
+<li>Declare random sites open until top connects to bottom.
+</li>
+<li>Vacancy percentage estimates <code>p*</code>.
+</li>
+</ul>
+
+<p>
+So basically, we keep going, adding open sites at random, checking after each whether the system percolates, until we can get the system to percolate.
+</p>
+
+<p>
+So what we want to do is run this experiment millions of times (which we can do now that we have a fast union-find algorithm) to get closer and closer to this number.
+</p>
+
+<p>
+The probability is the number of open sites divided by the total number of sites available on the grid (taking the mean value across these many simulations).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-4" class="outline-3">
+<h3 id="sec-6-4"><span class="section-number-3">6.4</span> Dynamic connectivity solution to estimate percolation threshold</h3>
+<div class="outline-text-3" id="text-6-4">
+<p>
+<b>Q.</b> How to check whether an N-by-N system percolates?
+</p>
+<ul class="org-ul">
+<li>Create an object for each site and name them <code>0</code> to <code>N^2 - 1</code>.
+</li>
+<li>Sites are in same component if connected by open sites.
+</li>
+<li>The brute-force algorithm: System percolates iff any site on bottom row is connected to site on top row (<code>N^2</code> calls to connected())
+</li>
+</ul>
+
+<p>
+Instead, we will use a clever trick: We will introduce 2 virtual sites (and connections to top and bottom).
+</p>
+<ul class="org-ul">
+<li>Percolates iff virtual top site is connected to virtual bottom site.
+</li>
+</ul>
+
+<p>
+This is an efficient algorithm: only makes 1 call to connected()
+</p>
+
+<p>
+<b>Q.</b> How to model opening a new site?
+<b>A.</b> Connect newly opened site to all of its adjacent open sites (if you think about this spacially, this could require up to 4 calls to union())
+</p>
+
+<p>
+So, for large enough grids, we can approach the percolation theshold <code>p*</code>.
+</p>
+
+<p>
+<b>Q.</b> What is percolation threshold <code>p*</code>?
+<b>A.</b> About 0.592746 for large square lattices.
+</p>
+
+<p>
+This is a constant known only via simulation.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-5" class="outline-3">
+<h3 id="sec-6-5"><span class="section-number-3">6.5</span> Subtext of today’s lecture (and this course):</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+<b>Steps to developing a usable algorithm.</b>
+</p>
+<ul class="org-ul">
+<li>Model the problem
+</li>
+<li>Find an algorithm to solve it
+</li>
+<li>Fast enough? Fits in memory?
+</li>
+<li>If not, figure out why
+</li>
+<li>Find a way to address the problem
+</li>
+<li>Iterate until satisfied
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="col-md-3"><nav id="table-of-contents">
+<div id="text-table-of-contents" class="bs-docs-sidebar">
+<ul class="nav">
+<li><a href="#sec-1">1. Lecture 1.5: Union Find Lecture Slides</a></li>
+<li><a href="#sec-2">2. Dynamic connectivity</a>
+<ul class="nav">
+<li><a href="#sec-2-1">2.1. Given a set of N objects:</a></li>
+<li><a href="#sec-2-2">2.2. Modeling the objects:</a></li>
+<li><a href="#sec-2-3">2.3. Modeling the connections</a></li>
+<li><a href="#sec-2-4">2.4. Implementing the operations</a></li>
+<li><a href="#sec-2-5">2.5. Union-find data type (API)</a></li>
+<li><a href="#sec-2-6">2.6. Dynamic-connetivity client</a></li>
+<li><a href="#sec-2-7">2.7. Code: Dynamic-connectivity client</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. Quick Find</a>
+<ul class="nav">
+<li><a href="#sec-3-1">3.1. Initializing the Data Structure</a></li>
+<li><a href="#sec-3-2">3.2. Representing a connection</a></li>
+<li><a href="#sec-3-3">3.3. Code: Quick Find</a></li>
+<li><a href="#sec-3-4">3.4. Time Complexity: Quick Find</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Quick Union</a>
+<ul class="nav">
+<li><a href="#sec-4-1">4.1. Data structure</a></li>
+<li><a href="#sec-4-2">4.2. Find Implementation</a></li>
+<li><a href="#sec-4-3">4.3. Union Implementation</a></li>
+<li><a href="#sec-4-4">4.4. Code: Quick Union</a></li>
+<li><a href="#sec-4-5">4.5. Time Complexity: Quick Union</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5. Quick Union Improvements</a>
+<ul class="nav">
+<li><a href="#sec-5-1">5.1. Improvement 1: Weighting</a></li>
+<li><a href="#sec-5-2">5.2. Java Implementation</a></li>
+<li><a href="#sec-5-3">5.3. Weighted Quick Union Analysis</a></li>
+<li><a href="#sec-5-4">5.4. Improvement 2: Path compression</a></li>
+<li><a href="#sec-5-5">5.5. Path compression: Java implementation</a></li>
+<li><a href="#sec-5-6">5.6. Weighted quick union with path compression: amortized analysis</a></li>
+<li><a href="#sec-5-7">5.7. Summary</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6. Union-Find Applications</a>
+<ul class="nav">
+<li><a href="#sec-6-1">6.1. Percolation</a></li>
+<li><a href="#sec-6-2">6.2. Percolation phase transition</a></li>
+<li><a href="#sec-6-3">6.3. Monte Carlo simulation</a></li>
+<li><a href="#sec-6-4">6.4. Dynamic connectivity solution to estimate percolation threshold</a></li>
+<li><a href="#sec-6-5">6.5. Subtext of today’s lecture (and this course):</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+</div></div></div>
+<footer id="postamble" class="">
+<div><p class="author">Author: Andrew Jarrett</p>
+<p class="date">Created: 2017-12-03 Sun 20:45</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.3.1 (<a href="http://orgmode.org">Org-mode</a> 9.1.2)</p>
+</div>
+</footer>
 </body>
 </html>

@@ -1,8 +1,8 @@
 #+TITLE: Union Find Notes
-#+AUTHOR: ahrjarrett
+#+AUTHOR: Andrew Jarrett
 
 ** [[https://github.com/ahrjarrett/analysis_of_algorithms/blob/master/part_i/lectures/15UnionFind.pdf][Lecture 1.5: Union Find Lecture Slides]]
-   
+
    | lecture # | link/title               |
    |-----------+--------------------------|
    | video 1   | [[https://www.coursera.org/learn/algorithms-part1/lecture/fjxHC/dynamic-connectivity][Dynamic Connectivity]]     |
@@ -14,44 +14,39 @@
 
 ** Dynamic connectivity
 
-   Pomodoro log:
    :LOGBOOK:
    CLOCK: [2017-11-29 Wed 03:17]--[2017-11-29 Wed 03:42] =>  0:25
    :END:
 
    Notes from Video 1:
 
-   We will be taking a *scientific approach*  
+   We will be taking a *scientific approach*
 
 *** Given a set of N objects:
 
-    1. Union command: Connect two objects
-    2. Find/connected query: is there a path connecting the two objects?
-    
-#+BEGIN_SRC java
-    // slide 4:
-    union(4, 3)
-    union(3, 8)
-    union(6, 5)
-    union(9, 4)
-    union(2, 1)
-    connected(0, 7) // false
-    connected(8, 9) // true
-    union(5, 0)
-    union(7, 2)
-    union(1, 0)
-    connected(0, 7) // true
-#+END_SRC
+     1. Union command: Connect two objects
+     2. Find/connected query: is there a path connecting the two objects?
 
-Question: Is there a path connecting =p= and =q=?
+ #+BEGIN_SRC java
+     // slide 4:
+     union(4, 3)
+     union(3, 8)
+     union(6, 5)
+     union(9, 4)
+     union(2, 1)
+     connected(0, 7) // false
+     connected(8, 9) // true
+     union(5, 0)
+     union(7, 2)
+     union(1, 0)
+     connected(0, 7) // true
+ #+END_SRC
 
-The algorithm we’re looking at will not return the actual path, but whether there /is/ a path
+ Question: Is there a path connecting =p= and =q=?
+
+ The algorithm we’re looking at will not return the actual path, but whether there /is/ a path
 
 *** Modeling the objects:
-
-    :LOGBOOK:
-    CLOCK: [2017-11-29 Wed 03:52]
-    :END:
 
 *Applications involve manipulating objects of all types:*
 
@@ -62,7 +57,7 @@ The algorithm we’re looking at will not return the actual path, but whether th
 - Elements in a mathematical set
 - Variable names in Fortran program
 - Metallic sites in a composite system
- 
+
 *** Modeling the connections
 
 We assume “is connected to” is an [[https://en.wikipedia.org/wiki/Equivalence_relation][Equivalence Relation]]
@@ -116,7 +111,7 @@ int count()                      // number of components
     1. Read in pair of integers from standard input
     2. If they are not yet connected, connect them and print out pair
 
-**** Code: Dynamic-connectivity client
+*** Code: Dynamic-connectivity client
 
 #+BEGIN_SRC java
   public static void main(String[] args)
@@ -140,3 +135,420 @@ This is /client code/, which means we’re able to actually run and test our cod
 
 End of video.
 
+
+** Quick Find
+
+*** Initializing the Data Structure
+
+When implementing the =union(p, q)= and =connected(p, q)=, we’re going to initialize the array where each value’s index is also its value (representative of the the point’s /reflexivity/).
+
+*** Representing a connection
+
+In order to represent a connection, we change the value at =p= and =q= to the “entry point”, which is chosen arbitrarily.
+
+#+BEGIN_SRC java
+// Start: { 0 1 2 3 4 5 6 7 8 9 }
+
+union(5, 4)
+// { 0 1 2 3 4 4 6 7 8 9 }
+
+union(4, 9)
+// { 0 1 2 3 4 4 6 7 8 4 }
+#+END_SRC
+
+> Note: this seems like a somewhat nieve approach, but I think it’s time complexity is O(n), right?
+
+*** Code: Quick Find
+
+#+BEGIN_SRC java
+public class QuickFindUF
+{
+  private int[] id;
+
+  // This is the constructor:
+  public QuickFindUF(int N)
+  {
+    id = new Int(N);
+    for (int i = 0; i < N; i++)
+    id[i] = i;
+  }
+
+  public boolean connected(int p, int q)
+  {
+    return id[p] === id[q];
+  }
+
+  // change all entries with id[p] to id[q]
+  // time complexity: at most 2N plus 2 array accesses
+  public void union(int p, int q)
+  {
+    int pid = id[p];
+    int qid = id[q];
+    for(int i = 0; i < id.length; i++)
+      if(id[i] == pid) id[i] = qid;
+  }
+}
+#+END_SRC
+
+*** Time Complexity: Quick Find
+
+Quick-find is too slow. Specifically the quick-find defect: Union is too expensive.
+
+| algorithm  | initialize | union | find |
+|------------+------------+-------+------|
+| quick-find | N        | N   | 1    |
+
+Example: Takes N^2 (quadratic) array accesses to process sequence of N union commands on N objects.
+
+
+** Quick Union
+   :LOGBOOK:
+   CLOCK: [2017-12-03 Sun 16:51]--[2017-12-03 Sun 17:16] =>  0:25
+   CLOCK: [2017-12-03 Sun 15:53]--[2017-12-03 Sun 16:18] =>  0:25
+   :END:
+
+Quick-union is a /lazy approach/.
+
+*** Data structure
+
+- Integer array =id[]= of size N.
+- Interpretation: id[i] is parent of i.
+- Root of i is =id[id[id[...id[i]...]]]=. Keep going until it doesn’t change (algorithm ensures no cycles).
+
+Each node is going to contain a reference to its parent. This is essentially the same data structure as before, but we can think of it as more like a tree (or a /forest/).
+
+*** Find Implementation
+
+So if we want to implement =find=, we need to check if =p= and =q= have the same root.
+
+*** Union Implementation
+
+To merge components containing =p= and =q=, set the id of =p’s= root to the id of =q’s= root. With these implementations in mind, which method is going to be more difficult to implement? This time, /find is more difficult/ because we have to figure out a way to check up the chain to find a common ancestor. In the case of merge (a.k.a. quick-union), we only have to change the value of 1 node.
+
+*Put differently:* If we run =union(3, 8)=, all we do is take the first item and make it a child of the second item (so now 3 points to 8, which points to itself). Then if we do =union(9, 4)=, 9 finds 4’s root, which is 8, and now 9 points to 8.
+
+*** Code: Quick Union
+
+#+BEGIN_SRC java
+public class QuickUnionUF
+{
+  private int[] id;
+
+  public QuickUnionUF(int N)
+  {
+    id = new int[N];
+    // set id of each object to itself (N array access)
+    for (int i = 0; i < N; i++) id[i] = i;
+  }
+
+  public int root(int i)
+  {
+    // chase parent pointers until reach root (depth of i array accesses)
+    while (i != id[i]) i = id[i];
+    return i;
+  }
+
+  public boolean connected(int p, int q)
+  {
+    // check if p and q have same root (depth of p and q array accesses)
+    return root(p) === root(q);
+  }
+
+  public void union(int p, int q)
+  {
+    // change root of p to point to root of q (depth of p and q array accesses)
+    int i = root(p);
+    int j = root(q);
+    id[i] = j;
+  }
+}
+#+END_SRC
+
+*** Time Complexity: Quick Union
+
+Unfortunately, quick-union is also too slow.
+
+**** Cost model:
+
+| algorithm   | initialize | union | find |
+|-------------+------------+-------+------|
+| quick-find  | N          | N     | 1    |
+| quick-union | N          | N†    | N    |
+
+  † includes cost of finding roots
+
+**** Quick-find defect
+- Union too expensive (N array accesses).
+- Trees are flat, but too expensive to keep them flat.
+
+**** Quick-union defect
+- Trees can get tall.
+- Find too expensive (could be N array accesses).
+
+
+
+
+
+** Quick Union Improvements
+
+*** Improvement 1: Weighting
+
+*Weighted quick-union.*
+
+- Modify quick-union to avoid tall trees.
+- Keep track of size of each tree (number of objects).
+- Balance by linking root of smaller tree to root of larger tree. <- Reasonable alternatives: union by height or “rank”
+
+*** Java Implementation
+
+*Data structure:* Same as quick union, but maintain extra array =sz[i]= to count number of objects in the tree rooted at =i=.
+
+*Find:* Identical to quick union.
+
+#+BEGIN_SRC java
+return root(p) === root(q);
+#+END_SRC
+
+*Union:* Modify quick union to:
+- Link root of smaller tree to root of larger tree.
+- Update the =sz[]= array.
+
+#+BEGIN_SRC java
+int i = root(p);
+int j = root(q);
+if (i === j) return;
+if (sz[i] < sz[j]) { id[i] = j; sz[j] += sz[i]; }
+else               { id[j] = i; sz[i] += sz[j]; }
+#+END_SRC
+
+*** Weighted Quick Union Analysis
+
+*Running time:*
+- Find: takes time proportional to depth of =p= and =q=.
+- Union: takes constant time, given roots.
+
+*Proposition:* Depth of any node =x= is at most =lg N= (logarithm base 2 is always represented as =lg N=).
+
+*Pf:* When does depth of =x= increase?
+
+Increases by 1 when tree =T1= containing =x= is merged into another tree =T2=.
+
+- The size of the tree containing =x= at least doubles since:
+
+#+BEGIN_SRC
+|T2| >= |T1|
+#+END_SRC
+
+- Size of tree containing =x= can double at most =log N= times. Why?
+
+That means that, in order to have a tree that is 30 levels deep, we would need to have an =N= of over 1 billion:
+
+#+BEGIN_SRC
+Math.pow(2, 30) // 1073741824
+#+END_SRC
+
+*Running time.*
+- Find: takes time proportional to depth of =p= and =q=.
+- Union: takes constant time, given roots.
+
+*Proposition:* Depth of any node =x= is at most =lg N=.
+
+| algorithm   | intiailize | union  | connected |
+|-------------+------------+--------+-----------|
+| quick find  | N          | N      | 1         |
+| quick union | N          | N †    | N         |
+| weighted QU | N          | lg N † | lg N      |
+
+  † includes cost of finding roots
+
+*Q.* Stop at guaranteed acceptable performance?
+*A.* No, easy to improve further.
+
+*** Improvement 2: Path compression
+
+*Quick union with path compression.* Just after computing the root of =p=, set the id of each examined node to point to that root.
+
+Put differently, along the way to checking the root of a given node, on the way we might as well also have each node now point directly to that root node (eliminating increasingly expensive lookups).
+
+*** Path compression: Java implementation
+
+#+BEGIN_SRC java
+private int root(int i)
+{
+  while(i != id[i])
+    {
+      id[i] = id[id[i]]; // only 1 extra line of code!
+      i = id[i];
+    }
+  return i;
+}
+#+END_SRC
+
+In practice, no reason not to! This implementation keeps the tree /almost completely flat/. Now, every node points to its grandparent.
+
+*** Weighted quick union with path compression: amortized analysis
+
+_From Wikipedia_: “In computer science, amortized analysis is a method for analyzing a given algorithm's time complexity, or how much of a resource, especially time or memory, it takes to execute. The motivation for amortized analysis is that looking at the worst-case run time per operation can be too pessimistic.”
+
+*Proposition:* [[https://www.coursera.org/learn/algorithms-greedy][Course: {Hopcroft-Ulman, Tarjan}]]
+
+Starting from an empty data structure, any sequence of =M= union find ops on =N= objects makes...
+#+BEGIN_SRC
+<= c (N + M lg * N)
+#+END_SRC
+
+...array accesses.
+
+- Analysis can be improved to =N + M α (M, N)=.
+- Simple algorithm with fascinating mathematics.
+
+|       N | lg * N |
+|---------+--------|
+|       1 |      0 |
+|       2 |      1 |
+|       4 |      2 |
+|      16 |      3 |
+|   65536 |      4 |
+| 2^65536 |      5 |
+
+=lg * N= is kind of a funny function; it represents the number of times you have to take the log of =N= to get 1, otherwise known as the *iterate log function*. In the real world, it’s best to think of this number as something that can, at most, represent 5.
+
+Because of this, we can think of the weighted quick union with path compression as /linear/ in the real world. There is also another, more interesting function called the [[https://en.wikipedia.org/wiki/Ackermann_function][Ackermann function]] which grows even more slowly than =lg * N=.
+
+Here is that function as represented on page 36 exercise 1.10 in [[https://mitpress.mit.edu/books/structure-and-interpretation-computer-programs][Structure and Interpretation of Computer Progams]]:
+
+#+BEGIN_SRC lisp
+(define (A x y)
+  (cond ((= y 0) 0)
+        ((= x 0) (* 2 y))
+        ((= y 1) 2)
+        (else (A (- x 1)
+              (A x (- y 1))))))
+
+(A 1 10) ;; 1024
+(A 2 4)  ;; 65536
+(A 3 3)  ;; 65536
+#+END_SRC
+
+This leads us to ask the question: is there a linear-time algorithm for =M= union find ops on =N= objects?
+
+- Cost within constant factor of reading in the data.
+- In theory, WQUPC is not quite linear.
+- In practice, WQUPC is linear.
+
+The answer is that we can prove that there is no such algorithm for union find that operates on linear time. This was proven by Friedman and Sachs (neither of whom could I find anything about online?).
+
+*** Summary
+
+*Bottom line.* Weighted quick union (with path compression) makes it possible to solve problems that could not otherwise be addressed.
+
+| algorithm                      | worst-case time |
+|--------------------------------+-----------------|
+| quick find                     | =M N=           |
+| quick union                    | =M N=           |
+| weighted QU                    | =N + M log N=   |
+| QU + path compression          | =N + M log N=   |
+| weighted QU + path compression | =N + M lg * N=  |
+
+/Above: M union-find operations on a set of N objects/
+
+*Ex.* [10^9 unions and finds with 10^9 objects]
+- WQUPC reduces time from 30 years to 6 seconds.
+- Supercomputer won’t help much; good algorithm enables solution.
+
+
+** Union-Find Applications
+
+There is a huge number of problems and applications for union-find, including:
+
+- Percolation
+- Games (Go, Hex)
+- Dynamic connectivity
+- Least common ancestor
+- Equivalence of finite state automata
+- Hoshen-Kopelman algorithm in physics
+- [[http://akgupta.ca/blog/2013/05/14/so-you-still-dont-understand-hindley-milner/][Hinley-Milner polymorphic type inference]]
+- Kruskal’s minimum spanning tree algorithm
+- Compiling equivalence statements in Fortran
+- Morphological attribute openings and closings
+- Matlab’s =bwlabel()= function in image processing
+
+*** Percolation
+
+*A model for many physical systems:*
+- N-by-N grid of sites
+- Each site is open with probability =p= (or blocked with probability 1 - =p=)
+- System /percolates/ iff (if and only if) top and bottom are connected by open sites
+
+We say that a system is “percolated” if we can find a way to get from the top to the bottom through white squares.
+
+| model              | system     | vacant site | occupied site | percolates   |
+|--------------------+------------+-------------+---------------+--------------|
+| electricity        | material   | conductor   | insulated     | conducts     |
+| fluid flow         | material   | empty       | blocked       | porous       |
+| social interaction | population | person      | empty         | communicates |
+
+*Note:* One thing that was tripping me up is the use of “vacant” and “occupied” here — vacant means that the site is /open/ and data can pass through, whereas occupied means that the site is /closed/.
+
+So if we have the quantifiable probability that a site is vacant, how can we quantify the chance that the system percolates?
+
+*** Percolation phase transition
+
+*When =N= is large, theory guarantees a sharp threshold =p*=.*
+- =p > p*=: almost certainly percolates.
+- =p < p*=: almost certainly does not percolate.
+
+*Q.* What is the value of =p*=?
+
+The threshold is actually very sharp, not as gradual as one might expect. In fact, there is a value that, as =N= gets large, almost certainly guarantees the system’s chance of percolation, based on whether the probability is above or below this number.
+
+However, we don’t know exactly what the number is. All we can do is run similations with different sample sizes and different probability values to try to ascertain or estimate what that value actually is. These simulations are made possible by fast union-find algorithms.
+
+*** Monte Carlo simulation
+
+- Initialize N-by-N whole grid to be blocked.
+- Declare random sites open until top connects to bottom.
+- Vacancy percentage estimates =p*=.
+
+So basically, we keep going, adding open sites at random, checking after each whether the system percolates, until we can get the system to percolate.
+
+So what we want to do is run this experiment millions of times (which we can do now that we have a fast union-find algorithm) to get closer and closer to this number.
+
+The probability is the number of open sites divided by the total number of sites available on the grid (taking the mean value across these many simulations).
+
+*** Dynamic connectivity solution to estimate percolation threshold
+
+*Q.* How to check whether an N-by-N system percolates?
+- Create an object for each site and name them =0= to =N^2 - 1=.
+- Sites are in same component if connected by open sites.
+- The brute-force algorithm: System percolates iff any site on bottom row is connected to site on top row (=N^2= calls to connected())
+
+Instead, we will use a clever trick: We will introduce 2 virtual sites (and connections to top and bottom).
+- Percolates iff virtual top site is connected to virtual bottom site.
+
+This is an efficient algorithm: only makes 1 call to connected()
+
+*Q.* How to model opening a new site?
+*A.* Connect newly opened site to all of its adjacent open sites (if you think about this spacially, this could require up to 4 calls to union())
+
+So, for large enough grids, we can approach the percolation theshold =p*=.
+
+*Q.* What is percolation threshold =p*=?
+*A.* About 0.592746 for large square lattices.
+
+This is a constant known only via simulation.
+
+*** Subtext of today’s lecture (and this course):
+
+*Steps to developing a usable algorithm.*
+- Model the problem
+- Find an algorithm to solve it
+- Fast enough? Fits in memory?
+- If not, figure out why
+- Find a way to address the problem
+- Iterate until satisfied
+
+
+** Assignment: Percolation
+
+   DEADLINE: <2017-12-04 Mon>
